@@ -1,0 +1,23 @@
+{
+  "name": "multi-select-areas-image",
+  "version": "0.1.1",
+  "private": false,
+  "description": "Multiple select areas in one image to show position each this",
+  "author": "quanghung97",
+  "scripts": {
+    "build": "bili --name index --plugin vue --vue.css false",
+    "dev": "vue serve src/components/MultiSelectAreasImage.vue"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "main": "./dist/index.js",
+  "devDependencies": {
+    "bili": "^4.8.1",
+    "node-sass": "^4.12.0",
+    "rollup-plugin-vue": "^5.0.1",
+    "sass-loader": "^7.3.1",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "license": "MIT"
+}

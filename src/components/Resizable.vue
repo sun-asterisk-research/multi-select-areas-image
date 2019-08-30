@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="handler">
         <!-- resize handler -->
         <div 
             v-if="item.resizable"
@@ -13,8 +13,7 @@
                 top: (item.y+posImg.top+item.height/2-4)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 'w', $event)"
+            @mousedown.stop.prevent="startDrag(item, 'w')"
         >
         </div>
         <div 
@@ -29,8 +28,7 @@
                 top: (item.y+posImg.top+item.height-6)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 'sw', $event)"
+            @mousedown.stop.prevent="startDrag(item, 'sw')"
         >
         </div>
         <div 
@@ -45,8 +43,7 @@
                 top: (item.y+posImg.top+item.height-6)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 's', $event)"
+            @mousedown.stop.prevent="startDrag(item, 's')"
         >
         </div>
         <div 
@@ -61,8 +58,7 @@
                 top: (item.y+posImg.top+item.height-6)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 'se', $event)"
+            @mousedown.stop.prevent="startDrag(item, 'se')"
         >
         </div>
         <div 
@@ -77,8 +73,7 @@
                 top: (item.y+posImg.top+item.height/2-6)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 'e', $event)"
+            @mousedown.stop.prevent="startDrag(item, 'e')"
         >
         </div>
         <div 
@@ -93,8 +88,7 @@
                 top: (item.y+posImg.top-4)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 'ne', $event)"
+            @mousedown.stop.prevent="startDrag(item, 'ne')"
         >
         </div>
         <div 
@@ -109,8 +103,7 @@
                 top: (item.y+posImg.top-4)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 'n', $event)"
+            @mousedown.stop.prevent="startDrag(item, 'n')"
         >
         </div>
         <div 
@@ -125,8 +118,7 @@
                 top: (item.y+posImg.top-4)+'px',
                 'z-index': item.z+10
             }"
-            @mousedown.stop.prevent="startDrag(item ,$event)"
-            @mousemove="doDrag(item, 'nw', $event)"
+            @mousedown.stop.prevent="startDrag(item, 'nw')"
         >
         </div>
     </div>
@@ -135,6 +127,7 @@
 export default {
   data () {
     return {
+        pos: null
     }
   },
   props: {
@@ -148,12 +141,19 @@ export default {
     }
   },
   methods: {
-    startDrag(item, e) {
-        this.$emit('startDrag', item, e)
+    startDrag(item, type) {
+        this.pos = type
+        document.addEventListener('mousemove', this.doDrag)
+        this.$emit('startDrag')
     },
-    doDrag(item, type, e) {
-        this.$emit('doDrag', item, type, e)
+    doDrag(e) {
+        this.$emit('doDrag', this.item, this.pos, e)
     }
+  },
+  updated() {
+      if (this.item.resizable == false) {
+          window.addEventListener('mouseup', document.removeEventListener('mousemove', this.doDrag))
+      }
   }
 }
 </script>

@@ -1,5 +1,5 @@
 /*!
- * multi-select-areas-image v0.1.1
+ * multi-select-areas-image v0.1.2
  * (c) quanghung97
  * Released under the MIT License.
  */
@@ -130,17 +130,11 @@
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 var script = {
   data: function data() {
-    return {};
+    return {
+      pos: null
+    };
   },
   props: {
     item: {
@@ -153,11 +147,18 @@ var script = {
     }
   },
   methods: {
-    startDrag: function startDrag(item, e) {
-      this.$emit('startDrag', item, e);
+    startDrag: function startDrag(item, type) {
+      this.pos = type;
+      document.addEventListener('mousemove', this.doDrag);
+      this.$emit('startDrag');
     },
-    doDrag: function doDrag(item, type, e) {
-      this.$emit('doDrag', item, type, e);
+    doDrag: function doDrag(e) {
+      this.$emit('doDrag', this.item, this.pos, e);
+    }
+  },
+  updated: function updated() {
+    if (this.item.resizable == false) {
+      window.addEventListener('mouseup', document.removeEventListener('mousemove', this.doDrag));
     }
   }
 };
@@ -313,7 +314,9 @@ var __vue_render__ = function __vue_render__() {
 
   var _c = _vm._self._c || _h;
 
-  return _c('div', [_vm.item.resizable ? _c('div', {
+  return _c('div', {
+    staticClass: "handler"
+  }, [_vm.item.resizable ? _c('div', {
     staticClass: "select-areas-resize-handler w",
     style: {
       opacity: 0.5,
@@ -328,10 +331,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 'w', $event);
+        return _vm.startDrag(_vm.item, 'w');
       }
     }
   }) : _vm._e(), _vm._v(" "), _vm.item.resizable ? _c('div', {
@@ -349,10 +349,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 'sw', $event);
+        return _vm.startDrag(_vm.item, 'sw');
       }
     }
   }) : _vm._e(), _vm._v(" "), _vm.item.resizable ? _c('div', {
@@ -370,10 +367,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 's', $event);
+        return _vm.startDrag(_vm.item, 's');
       }
     }
   }) : _vm._e(), _vm._v(" "), _vm.item.resizable ? _c('div', {
@@ -391,10 +385,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 'se', $event);
+        return _vm.startDrag(_vm.item, 'se');
       }
     }
   }) : _vm._e(), _vm._v(" "), _vm.item.resizable ? _c('div', {
@@ -412,10 +403,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 'e', $event);
+        return _vm.startDrag(_vm.item, 'e');
       }
     }
   }) : _vm._e(), _vm._v(" "), _vm.item.resizable ? _c('div', {
@@ -433,10 +421,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 'ne', $event);
+        return _vm.startDrag(_vm.item, 'ne');
       }
     }
   }) : _vm._e(), _vm._v(" "), _vm.item.resizable ? _c('div', {
@@ -454,10 +439,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 'n', $event);
+        return _vm.startDrag(_vm.item, 'n');
       }
     }
   }) : _vm._e(), _vm._v(" "), _vm.item.resizable ? _c('div', {
@@ -475,10 +457,7 @@ var __vue_render__ = function __vue_render__() {
       "mousedown": function mousedown($event) {
         $event.stopPropagation();
         $event.preventDefault();
-        return _vm.startDrag(_vm.item, $event);
-      },
-      "mousemove": function mousemove($event) {
-        return _vm.doDrag(_vm.item, 'nw', $event);
+        return _vm.startDrag(_vm.item, 'nw');
       }
     }
   }) : _vm._e()]);
@@ -489,8 +468,8 @@ var __vue_staticRenderFns__ = [];
 
 var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
   if (!inject) return;
-  inject("data-v-4319d4e8_0", {
-    source: ".select-areas-resize-handler[data-v-4319d4e8]{background-color:#000;border:1px #fff solid;height:8px;width:8px;overflow:hidden}",
+  inject("data-v-06438e33_0", {
+    source: ".select-areas-resize-handler[data-v-06438e33]{background-color:#000;border:1px #fff solid;height:8px;width:8px;overflow:hidden}",
     map: undefined,
     media: undefined
   });
@@ -498,7 +477,7 @@ var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
 /* scoped */
 
 
-var __vue_scope_id__ = "data-v-4319d4e8";
+var __vue_scope_id__ = "data-v-06438e33";
 /* module identifier */
 
 var __vue_module_identifier__ = undefined;

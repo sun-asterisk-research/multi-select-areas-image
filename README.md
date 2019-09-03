@@ -13,7 +13,7 @@ npm i multi-select-areas-image
 ```
 ## For Vue.js 2.0
 
-Use draggable component:
+Use multi-select-areas-image component:
 
 ### Typical use:
 ``` js
@@ -56,3 +56,46 @@ Default: `1000`
 
 Set width image area
 
+#### opacityOutline
+Type: `Number`<br>
+Required: `false`<br>
+Default: `0.5`
+
+Set opacity outline border box select area
+
+#### opacityOverlay
+Type: `Number`<br>
+Required: `false`<br>
+Default: `0.5`
+
+Set opacity overlay on image
+
+### $emit
+
+``` html
+<template>
+  <div>
+    <multi-select-areas-image v-on:getListAreas="getListAreas" />
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      areas: []
+    }
+  },
+  methods: {
+    getListAreas(value) {
+      // console.log(value)
+      this.areas = value
+    }
+  }
+}
+</script>
+```
+
+#### getListAreas
+Params: `Null`<br>
+Return: `Array`

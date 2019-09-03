@@ -1,11 +1,12 @@
 {
   "name": "multi-select-areas-image",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "description": "Multiple select areas in one image to show position each this",
   "author": "quanghung97",
   "scripts": {
     "build": "bili --name index --plugin vue --vue.css false",
+    "bundle": "npx bili --bundle-node-modules",
     "dev": "vue serve src/components/MultiSelectAreasImage.vue"
   },
   "files": [

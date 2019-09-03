@@ -551,6 +551,14 @@ var script$1 = {
     width: {
       type: Number,
       "default": 1500
+    },
+    opacityOutline: {
+      type: Number,
+      "default": 0.5
+    },
+    opacityOverlay: {
+      type: Number,
+      "default": 0.5
     }
   },
   components: {
@@ -565,19 +573,27 @@ var script$1 = {
       setTimeout(function () {
         _this2.setSize();
       }, 200);
+    },
+    // send data to parent when list areas change
+    areas: function areas() {
+      var _this3 = this;
+
+      setTimeout(function () {
+        _this3.getListAreas();
+      }, 200);
     }
   },
   methods: {
     setSize: function setSize() {
       try {
-        var _this4 = this;
+        var _this5 = this;
 
-        if (!_this4.url) {
+        if (!_this5.url) {
           return;
         }
 
-        return _await(_this4.getSize(_this4.url), function (imgSize) {
-          _this4.originImgSize = imgSize;
+        return _await(_this5.getSize(_this5.url), function (imgSize) {
+          _this5.originImgSize = imgSize;
         });
       } catch (e) {
         return Promise.reject(e);
@@ -658,14 +674,14 @@ var script$1 = {
       }
     },
     mouseMove: function mouseMove(e) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.mousedown) {
         this.areas.filter(function (x) {
-          return x.id == _this5.temp;
+          return x.id == _this6.temp;
         }).map(function (item) {
-          item.width = e.pageX - item.x - _this5.posImg.left - 8;
-          item.height = e.pageY - item.y - _this5.posImg.top - 8;
+          item.width = e.pageX - item.x - _this6.posImg.left - 8;
+          item.height = e.pageY - item.y - _this6.posImg.top - 8;
         });
       }
     },
@@ -705,8 +721,12 @@ var script$1 = {
       if (this.dragdown) {
         switch (type) {
           case 'w':
-            item.width = item.width + item.x - e.pageX + this.posImg.left;
-            item.x = e.pageX - this.posImg.left;
+            // fix drag outside box w position
+            if (e.pageX - this.posImg.left >= 0) {
+              item.width = item.width + item.x - e.pageX + this.posImg.left;
+              item.x = e.pageX - this.posImg.left;
+            } // fix minimum area
+
 
             if (item.width < 10) {
               item.x = item.x - 10;
@@ -716,9 +736,16 @@ var script$1 = {
             break;
 
           case 'sw':
-            item.width = item.width + item.x - e.pageX + this.posImg.left;
-            item.x = e.pageX - this.posImg.left;
-            item.height = e.pageY - this.posImg.top - item.y;
+            // fix drag outside box sw position
+            if (e.pageX - this.posImg.left >= 0) {
+              item.width = item.width + item.x - e.pageX + this.posImg.left;
+              item.x = e.pageX - this.posImg.left;
+            }
+
+            if (e.pageY - this.posImg.top <= this.originImgSize.h) {
+              item.height = e.pageY - this.posImg.top - item.y;
+            } // fix minimum area
+
 
             if (item.width < 10) {
               item.x = item.x - 10;
@@ -732,7 +759,11 @@ var script$1 = {
             break;
 
           case 's':
-            item.height = e.pageY - this.posImg.top - item.y;
+            // fix drag outside box s position
+            if (e.pageY - this.posImg.top <= this.originImgSize.h) {
+              item.height = e.pageY - this.posImg.top - item.y;
+            } // fix minimum area
+
 
             if (item.height < 10) {
               item.height = item.height + 10;
@@ -741,8 +772,15 @@ var script$1 = {
             break;
 
           case 'se':
-            item.width = e.pageX - this.posImg.left - item.x;
-            item.height = e.pageY - this.posImg.top - item.y;
+            // fix drag outside box se position
+            if (e.pageX - this.posImg.left <= this.originImgSize.w) {
+              item.width = e.pageX - this.posImg.left - item.x;
+            }
+
+            if (e.pageY - this.posImg.top <= this.originImgSize.h) {
+              item.height = e.pageY - this.posImg.top - item.y;
+            } // fix minimum area
+
 
             if (item.width < 10) {
               item.x = item.x - 10;
@@ -756,7 +794,11 @@ var script$1 = {
             break;
 
           case 'e':
-            item.width = e.pageX - this.posImg.left - item.x;
+            // fix drag outside box e position
+            if (e.pageX - this.posImg.left <= this.originImgSize.w) {
+              item.width = e.pageX - this.posImg.left - item.x;
+            } // fix minimum area
+
 
             if (item.width < 10) {
               item.x = item.x - 10;
@@ -766,9 +808,16 @@ var script$1 = {
             break;
 
           case 'ne':
-            item.width = e.pageX - this.posImg.left - item.x;
-            item.height = item.height + (item.y + this.posImg.top - e.pageY);
-            item.y = e.pageY - this.posImg.top;
+            // fix drag outside box ne position
+            if (e.pageX - this.posImg.left <= this.originImgSize.w) {
+              item.width = e.pageX - this.posImg.left - item.x;
+            }
+
+            if (e.pageY - this.posImg.top >= 0) {
+              item.height = item.height + (item.y + this.posImg.top - e.pageY);
+              item.y = e.pageY - this.posImg.top;
+            } // fix minimum area
+
 
             if (item.width < 10) {
               item.x = item.x - 10;
@@ -782,8 +831,12 @@ var script$1 = {
             break;
 
           case 'n':
-            item.height = item.height + (item.y + this.posImg.top - e.pageY);
-            item.y = e.pageY - this.posImg.top;
+            // fix drag outside box n position
+            if (e.pageY - this.posImg.top >= 0) {
+              item.height = item.height + (item.y + this.posImg.top - e.pageY);
+              item.y = e.pageY - this.posImg.top;
+            } // fix minimum area
+
 
             if (item.height < 10) {
               item.height = item.height + 10;
@@ -792,10 +845,17 @@ var script$1 = {
             break;
 
           case 'nw':
-            item.height = item.height + (item.y + this.posImg.top - e.pageY);
-            item.y = e.pageY - this.posImg.top;
-            item.width = item.width + item.x - e.pageX + this.posImg.left;
-            item.x = e.pageX - this.posImg.left;
+            // fix drag outside box nw position
+            if (e.pageY - this.posImg.top >= 0) {
+              item.height = item.height + (item.y + this.posImg.top - e.pageY);
+              item.y = e.pageY - this.posImg.top;
+            }
+
+            if (e.pageX - this.posImg.left >= 0) {
+              item.width = item.width + item.x - e.pageX + this.posImg.left;
+              item.x = e.pageX - this.posImg.left;
+            } // fix minimum area
+
 
             if (item.width < 10) {
               item.x = item.x - 10;
@@ -839,6 +899,10 @@ var script$1 = {
     },
     endMove: function endMove() {
       this.move = false;
+    },
+    // send data from child to parent $emit
+    getListAreas: function getListAreas() {
+      this.$emit('getListAreas', this.areas);
     }
   },
   mounted: function mounted() {
@@ -880,7 +944,7 @@ var __vue_render__$1 = function __vue_render__() {
   }) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "select-areas--overlay",
     style: {
-      opacity: 0.5,
+      opacity: _vm.opacityOverlay,
       position: 'absolute',
       width: _vm.originImgSize.w + 'px',
       height: _vm.originImgSize.h + 'px',
@@ -916,7 +980,7 @@ var __vue_render__$1 = function __vue_render__() {
     }, [_c('div', {
       staticClass: "select-areas--outline",
       style: {
-        opacity: 0.5,
+        opacity: _vm.opacityOutline,
         position: 'absolute',
         cursor: 'default',
         width: item.width + 4 + 'px',
@@ -984,8 +1048,8 @@ var __vue_staticRenderFns__$1 = [];
 
 var __vue_inject_styles__$1 = function __vue_inject_styles__(inject) {
   if (!inject) return;
-  inject("data-v-752ade75_0", {
-    source: ".c-crop[data-v-752ade75]{display:inline-block}.c-crop *[data-v-752ade75]{box-sizing:border-box}.c-crop img[data-v-752ade75]{pointer-events:none}.c-crop .c-crop--hide_main[data-v-752ade75]{width:0;height:0;overflow:hidden}.original-image[data-v-752ade75]{position:absolute}.select-areas--overlay[data-v-752ade75]{background-color:#000;overflow:hidden;position:absolute}.select-areas--outline[data-v-752ade75]{background:#fff url(data:image/gif;base64,R0lGODlhCAAIAJEAAKqqqv///wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAACAAIAAACDZQFCadrzVRMB9FZ5SwAIfkECQoAAAAsAAAAAAgACAAAAg+ELqCYaudeW9ChyOyltQAAIfkECQoAAAAsAAAAAAgACAAAAg8EhGKXm+rQYtC0WGl9oAAAIfkECQoAAAAsAAAAAAgACAAAAg+EhWKQernaYmjCWLF7qAAAIfkECQoAAAAsAAAAAAgACAAAAg2EISmna81UTAfRWeUsACH5BAkKAAAALAAAAAAIAAgAAAIPFA6imGrnXlvQocjspbUAACH5BAkKAAAALAAAAAAIAAgAAAIPlIBgl5vq0GLQtFhpfaIAACH5BAUKAAAALAAAAAAIAAgAAAIPlIFgknq52mJowlixe6gAADs=);overflow:hidden}.select-areas--delete_area[data-v-752ade75]{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfjCB0SCQuXtRLQAAABRklEQVQoz4XRMUiUcQCG8V//O6MhuuEwI4VDDg9ubDCC+ILzIgcFySEnP2wOkqDRMffAa+3wpqDBSRAPp6MlC+yTFsnS0EzBursp8ECHS3AIetYXXnjfhy5B2SuJlpZPKkaEbnAJDJh33w/v7SLntpvq5uz5G69IPFWUlZGRVTQrsaK/W74o8UiftHPS+kxJVIWUkucWLHvilkO/kfdY5K2OaR+DSQfqjrWNmzFkyIxxbcdWHZpMi7xzpGNJxl29KGhY0nFk3b0gZ0cH22q2lJVtqdnGiW9ywX8Idg3qQV6sYM2aglgePQbtpDXc0avpoUhDDbFIy0vXDWuk/BH76avIpje++OW7lGs+mzBqnqAqMfWPoza9FlJOfVAy5kTTqcuuuCpnwqx9z7S7svq98MDBBVk31M3Zv7hmRMWGpqYNC0rnus8AXqJjvC9MrWIAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMDgtMjlUMTY6MDk6MTErMDI6MDDV30hTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTA4LTI5VDE2OjA5OjExKzAyOjAwpILw7wAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=);cursor:pointer;height:16px;width:16px}.delete-area[data-v-752ade75]{position:absolute;cursor:pointer;padding:5px}",
+  inject("data-v-25c89760_0", {
+    source: ".c-crop[data-v-25c89760]{display:inline-block}.c-crop *[data-v-25c89760]{box-sizing:border-box}.c-crop img[data-v-25c89760]{pointer-events:none}.c-crop .c-crop--hide_main[data-v-25c89760]{width:0;height:0;overflow:hidden}.original-image[data-v-25c89760]{position:absolute}.select-areas--overlay[data-v-25c89760]{background-color:#000;overflow:hidden;position:absolute}.select-areas--outline[data-v-25c89760]{background:#fff url(data:image/gif;base64,R0lGODlhCAAIAJEAAKqqqv///wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAACAAIAAACDZQFCadrzVRMB9FZ5SwAIfkECQoAAAAsAAAAAAgACAAAAg+ELqCYaudeW9ChyOyltQAAIfkECQoAAAAsAAAAAAgACAAAAg8EhGKXm+rQYtC0WGl9oAAAIfkECQoAAAAsAAAAAAgACAAAAg+EhWKQernaYmjCWLF7qAAAIfkECQoAAAAsAAAAAAgACAAAAg2EISmna81UTAfRWeUsACH5BAkKAAAALAAAAAAIAAgAAAIPFA6imGrnXlvQocjspbUAACH5BAkKAAAALAAAAAAIAAgAAAIPlIBgl5vq0GLQtFhpfaIAACH5BAUKAAAALAAAAAAIAAgAAAIPlIFgknq52mJowlixe6gAADs=);overflow:hidden}.select-areas--delete_area[data-v-25c89760]{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfjCB0SCQuXtRLQAAABRklEQVQoz4XRMUiUcQCG8V//O6MhuuEwI4VDDg9ubDCC+ILzIgcFySEnP2wOkqDRMffAa+3wpqDBSRAPp6MlC+yTFsnS0EzBursp8ECHS3AIetYXXnjfhy5B2SuJlpZPKkaEbnAJDJh33w/v7SLntpvq5uz5G69IPFWUlZGRVTQrsaK/W74o8UiftHPS+kxJVIWUkucWLHvilkO/kfdY5K2OaR+DSQfqjrWNmzFkyIxxbcdWHZpMi7xzpGNJxl29KGhY0nFk3b0gZ0cH22q2lJVtqdnGiW9ywX8Idg3qQV6sYM2aglgePQbtpDXc0avpoUhDDbFIy0vXDWuk/BH76avIpje++OW7lGs+mzBqnqAqMfWPoza9FlJOfVAy5kTTqcuuuCpnwqx9z7S7svq98MDBBVk31M3Zv7hmRMWGpqYNC0rnus8AXqJjvC9MrWIAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMDgtMjlUMTY6MDk6MTErMDI6MDDV30hTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTA4LTI5VDE2OjA5OjExKzAyOjAwpILw7wAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=);cursor:pointer;height:16px;width:16px}.delete-area[data-v-25c89760]{position:absolute;cursor:pointer;padding:5px}",
     map: undefined,
     media: undefined
   });
@@ -993,7 +1057,7 @@ var __vue_inject_styles__$1 = function __vue_inject_styles__(inject) {
 /* scoped */
 
 
-var __vue_scope_id__$1 = "data-v-752ade75";
+var __vue_scope_id__$1 = "data-v-25c89760";
 /* module identifier */
 
 var __vue_module_identifier__$1 = undefined;

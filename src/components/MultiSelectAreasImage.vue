@@ -12,7 +12,7 @@
         <div 
             class="select-areas--overlay" 
             :style="{
-              opacity: 0.5,
+              opacity: opacityOverlay,
               position: 'absolute',
               width: originImgSize.w+'px',
               height:  originImgSize.h+'px',
@@ -38,7 +38,7 @@
             <div
                 class="select-areas--outline"
                 :style="{
-                  opacity: 0.5,
+                  opacity: opacityOutline,
                   position: 'absolute',
                   cursor: 'default',
                   width: item.width+4+'px',
@@ -136,6 +136,14 @@ export default {
     width: {
       type: Number,
       default: 1500
+    },
+    opacityOutline: {
+      type: Number,
+      default: 0.5
+    },
+    opacityOverlay: {
+      type: Number,
+      default: 0.5
     }
   },
   components: {
@@ -148,6 +156,12 @@ export default {
       this.url = val
       setTimeout(() => {
         this.setSize()
+      }, 200)
+    },
+    // send data to parent when list areas change
+    areas () {
+      setTimeout(() => {
+        this.getListAreas()
       }, 200)
     }
   },
@@ -272,17 +286,27 @@ export default {
       if (this.dragdown) {
         switch (type) {
           case 'w':
-            item.width = item.width + item.x - e.pageX + this.posImg.left
-            item.x = e.pageX - this.posImg.left
+            // fix drag outside box w position
+            if (e.pageX - this.posImg.left >= 0) {
+              item.width = item.width + item.x - e.pageX + this.posImg.left
+              item.x = e.pageX - this.posImg.left
+            }
+            // fix minimum area
             if (item.width < 10) {
               item.x = item.x - 10
               item.width = item.width + 10
             }
             break;
           case 'sw':
-            item.width = item.width + item.x - e.pageX + this.posImg.left
-            item.x = e.pageX - this.posImg.left
-            item.height = (e.pageY - this.posImg.top - item.y)
+            // fix drag outside box sw position
+            if (e.pageX - this.posImg.left >= 0) {
+              item.width = item.width + item.x - e.pageX + this.posImg.left
+              item.x = e.pageX - this.posImg.left
+            }
+            if (e.pageY - this.posImg.top <= this.originImgSize.h) {
+              item.height = e.pageY - this.posImg.top - item.y
+            }
+            // fix minimum area
             if (item.width < 10) {
                 item.x = item.x - 10
                 item.width = item.width + 10
@@ -292,14 +316,24 @@ export default {
             }
             break;
           case 's':
-            item.height = (e.pageY - this.posImg.top - item.y)
+            // fix drag outside box s position
+            if (e.pageY - this.posImg.top <= this.originImgSize.h) {
+              item.height = e.pageY - this.posImg.top - item.y
+            }
+            // fix minimum area
             if (item.height < 10) {
                 item.height = item.height + 10
             }
             break;
           case 'se':
-            item.width = e.pageX - this.posImg.left - item.x
-            item.height = (e.pageY - this.posImg.top - item.y)
+            // fix drag outside box se position
+            if (e.pageX - this.posImg.left <= this.originImgSize.w) {
+              item.width = e.pageX - this.posImg.left - item.x
+            }
+            if (e.pageY - this.posImg.top <= this.originImgSize.h) {
+              item.height = e.pageY - this.posImg.top - item.y
+            }
+            // fix minimum area
             if (item.width < 10) {
                 item.x = item.x - 10
                 item.width = item.width + 10
@@ -309,17 +343,26 @@ export default {
             }
             break;
           case 'e':
-            item.width = e.pageX - this.posImg.left - item.x
+            // fix drag outside box e position
+            if (e.pageX - this.posImg.left <= this.originImgSize.w) {
+              item.width = e.pageX - this.posImg.left - item.x
+            }
+            // fix minimum area
             if (item.width < 10) {
                 item.x = item.x - 10
                 item.width = item.width + 10
             }
             break;
           case 'ne':
-            item.width = e.pageX - this.posImg.left - item.x
-            item.height = item.height + ((item.y + this.posImg.top) - e.pageY)
-            item.y = e.pageY - this.posImg.top
-            
+            // fix drag outside box ne position
+            if (e.pageX - this.posImg.left <= this.originImgSize.w) {
+              item.width = e.pageX - this.posImg.left - item.x
+            }
+            if (e.pageY - this.posImg.top >= 0) {
+              item.height = item.height + ((item.y + this.posImg.top) - e.pageY)
+              item.y = e.pageY - this.posImg.top
+            }
+            // fix minimum area
             if (item.width < 10) {
                 item.x = item.x - 10
                 item.width = item.width + 10
@@ -329,18 +372,27 @@ export default {
             }
             break;
           case 'n':
-            item.height = item.height + ((item.y + this.posImg.top) - e.pageY)
-            item.y = e.pageY - this.posImg.top
-
+            // fix drag outside box n position
+            if (e.pageY - this.posImg.top >= 0) {
+              item.height = item.height + ((item.y + this.posImg.top) - e.pageY)
+              item.y = e.pageY - this.posImg.top
+            }
+            // fix minimum area
             if (item.height < 10) {
                 item.height = item.height + 10
             }
             break;
           case 'nw':
-            item.height = item.height + ((item.y + this.posImg.top) - e.pageY)
-            item.y = e.pageY - this.posImg.top
-            item.width = item.width + item.x - e.pageX + this.posImg.left
-            item.x = e.pageX - this.posImg.left
+            // fix drag outside box nw position
+            if (e.pageY - this.posImg.top >= 0) {
+              item.height = item.height + ((item.y + this.posImg.top) - e.pageY)
+              item.y = e.pageY - this.posImg.top
+            }
+            if (e.pageX - this.posImg.left >= 0) {
+              item.width = item.width + item.x - e.pageX + this.posImg.left
+              item.x = e.pageX - this.posImg.left
+            }
+            // fix minimum area
             if (item.width < 10) {
               item.x = item.x - 10
               item.width = item.width + 10
@@ -383,6 +435,11 @@ export default {
 
     endMove() {
       this.move = false
+    },
+
+    // send data from child to parent $emit
+    getListAreas() {
+      this.$emit('getListAreas', this.areas)
     }
 
   },

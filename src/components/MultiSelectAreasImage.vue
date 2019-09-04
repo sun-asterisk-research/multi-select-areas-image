@@ -9,8 +9,8 @@
             v-if="url"
             :width="width"
         >
-        <div 
-            class="select-areas--overlay" 
+        <div
+            class="select-areas--overlay"
             :style="{
               opacity: opacityOverlay,
               position: 'absolute',
@@ -20,7 +20,7 @@
             }">
         </div>
 
-        <div 
+        <div
             :style="{
               'background-color': 'rgb(0, 0, 0)',
               opacity: 0,
@@ -49,7 +49,7 @@
                 }"
             ></div>
             <div
-                class="select-areas--background_area" 
+                class="select-areas--background_area"
                 :style="{
                   background: `#fff url('${url}') -${item.x}px -${item.y}px / ${originImgSize.w}px ${originImgSize.h}px no-repeat`,
                   position: 'absolute',
@@ -62,7 +62,6 @@
                 }"
                 @click="changeResizable(item.id)"
             >
-            
             </div>
             <div
                 v-if="item.resizable"
@@ -204,9 +203,9 @@ export default {
         r: r
       }
     },
-    calcPosOfBox() { // set posImg static
+    calcPosOfBox () { // set posImg static
       let ref = this.$refs['image-area']
-      
+
       this.scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
       this.scrollTop = window.pageYOffset || document.documentElement.scrollTop
       this.posImg.top = ref.getBoundingClientRect().top + this.scrollTop
@@ -214,9 +213,9 @@ export default {
       this.posImg.left = ref.getBoundingClientRect().left + this.scrollLeft
     },
     // draw rectangle on image mouseDown mouseMove mouseUp
-    mouseDown(e) {
+    mouseDown (e) {
       this.mousedown = true
-      if(this.areas.length > 0) {
+      if (this.areas.length > 0) {
         let idArea = this.areas.slice(-1).pop().id // get last areas
         if (idArea) {
           this.areas.push({
@@ -228,10 +227,9 @@ export default {
             z: 0,
             resizable: false
           })
-          this.temp = idArea + 1;
+          this.temp = idArea + 1
         }
-      }
-      else {
+      } else {
         this.areas.push({
           id: 1,
           x: e.pageX - this.posImg.left,
@@ -241,48 +239,48 @@ export default {
           z: 0,
           resizable: false
         })
-        this.temp = 1;
+        this.temp = 1
       }
     },
 
-    mouseMove(e) {
+    mouseMove (e) {
       if (this.mousedown) {
-        this.areas.filter(x => x.id == this.temp).map(item => {
+        this.areas.filter(x => x.id === this.temp).map(item => {
           item.width = (e.pageX - item.x - this.posImg.left) - 8
           item.height = (e.pageY - item.y - this.posImg.top) - 8
-        });
+        })
       }
     },
 
-    mouseUp() {
+    mouseUp () {
       this.mousedown = false
       // delete all point width is = 0
-      this.areas = this.areas.filter(item => item.width != 0 || item.height != 0)
+      this.areas = this.areas.filter(item => item.width !== 0 || item.height !== 0)
     },
 
     // after click rectangle area select active resizable and dragable
-    changeResizable(id) {
-      this.areas.filter(item => item.id == id).map(item => {
+    changeResizable (id) {
+      this.areas.filter(item => item.id === id).map(item => {
         item.resizable = true
         item.z = 100
       })
-      this.areas.filter(item => item.id != id).map(item => {
+      this.areas.filter(item => item.id !== id).map(item => {
         item.resizable = false
         item.z = 0
       })
     },
 
     // delete item area
-    deleteSelected(id) {
-      this.areas = this.areas.filter(item => item.id != id)
+    deleteSelected (id) {
+      this.areas = this.areas.filter(item => item.id !== id)
     },
 
     // drag point around rectangle on image startDrag doDrag endDrag
-    startDrag() {
+    startDrag () {
       this.dragdown = true
     },
 
-    doDrag(item, type, e) {
+    doDrag (item, type, e) {
       if (this.dragdown) {
         switch (type) {
           case 'w':
@@ -296,7 +294,7 @@ export default {
               item.x = item.x - 10
               item.width = item.width + 10
             }
-            break;
+            break
           case 'sw':
             // fix drag outside box sw position
             if (e.pageX - this.posImg.left >= 0) {
@@ -308,13 +306,13 @@ export default {
             }
             // fix minimum area
             if (item.width < 10) {
-                item.x = item.x - 10
-                item.width = item.width + 10
+              item.x = item.x - 10
+              item.width = item.width + 10
             }
             if (item.height < 10) {
-                item.height = item.height + 10
+              item.height = item.height + 10
             }
-            break;
+            break
           case 's':
             // fix drag outside box s position
             if (e.pageY - this.posImg.top <= this.originImgSize.h) {
@@ -322,9 +320,9 @@ export default {
             }
             // fix minimum area
             if (item.height < 10) {
-                item.height = item.height + 10
+              item.height = item.height + 10
             }
-            break;
+            break
           case 'se':
             // fix drag outside box se position
             if (e.pageX - this.posImg.left <= this.originImgSize.w) {
@@ -335,13 +333,13 @@ export default {
             }
             // fix minimum area
             if (item.width < 10) {
-                item.x = item.x - 10
-                item.width = item.width + 10
+              item.x = item.x - 10
+              item.width = item.width + 10
             }
             if (item.height < 10) {
-                item.height = item.height + 10
+              item.height = item.height + 10
             }
-            break;
+            break
           case 'e':
             // fix drag outside box e position
             if (e.pageX - this.posImg.left <= this.originImgSize.w) {
@@ -349,10 +347,10 @@ export default {
             }
             // fix minimum area
             if (item.width < 10) {
-                item.x = item.x - 10
-                item.width = item.width + 10
+              item.x = item.x - 10
+              item.width = item.width + 10
             }
-            break;
+            break
           case 'ne':
             // fix drag outside box ne position
             if (e.pageX - this.posImg.left <= this.originImgSize.w) {
@@ -364,13 +362,13 @@ export default {
             }
             // fix minimum area
             if (item.width < 10) {
-                item.x = item.x - 10
-                item.width = item.width + 10
+              item.x = item.x - 10
+              item.width = item.width + 10
             }
             if (item.height < 10) {
-                item.height = item.height + 10
+              item.height = item.height + 10
             }
-            break;
+            break
           case 'n':
             // fix drag outside box n position
             if (e.pageY - this.posImg.top >= 0) {
@@ -379,9 +377,9 @@ export default {
             }
             // fix minimum area
             if (item.height < 10) {
-                item.height = item.height + 10
+              item.height = item.height + 10
             }
-            break;
+            break
           case 'nw':
             // fix drag outside box nw position
             if (e.pageY - this.posImg.top >= 0) {
@@ -398,21 +396,21 @@ export default {
               item.width = item.width + 10
             }
             if (item.height < 10) {
-                item.height = item.height + 10
+              item.height = item.height + 10
             }
-            break;
+            break
           default:
-            break;
+            break
         }
       }
     },
 
-    endDrag() {
+    endDrag () {
       this.dragdown = false
     },
 
     // move rectangle area startMove doMove endMove
-    startMove(item, e) {
+    startMove (item, e) {
       this.move = true
       this.moveTempX = e.clientX
       this.moveTempY = e.clientY
@@ -420,7 +418,7 @@ export default {
       this.moveCurrentY = item.y
     },
 
-    doMove(item, e) {
+    doMove (item, e) {
       if (this.move) {
         let x = this.moveCurrentX + (e.clientX - this.moveTempX)
         let y = this.moveCurrentY + (e.clientY - this.moveTempY)
@@ -433,20 +431,19 @@ export default {
       }
     },
 
-    endMove() {
+    endMove () {
       this.move = false
     },
 
     // send data from child to parent $emit
-    getListAreas() {
+    getListAreas () {
       this.$emit('getListAreas', this.areas)
     }
-
   },
   mounted () {
     this.setSize()
-    window.addEventListener('mousemove', this.calcPosOfBox);
-    window.addEventListener('scroll', this.calcPosOfBox);
+    window.addEventListener('mousemove', this.calcPosOfBox)
+    window.addEventListener('scroll', this.calcPosOfBox)
     this.calcPosOfBox()
     window.addEventListener('mouseup', this.mouseUp)
     window.addEventListener('mouseup', this.endMove)

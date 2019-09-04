@@ -1,7 +1,7 @@
 <template>
     <div class="handler">
         <!-- resize handler -->
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler w"
             :style="{
@@ -16,7 +16,7 @@
             @mousedown.stop.prevent="startDrag(item, 'w')"
         >
         </div>
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler sw"
             :style="{
@@ -31,7 +31,7 @@
             @mousedown.stop.prevent="startDrag(item, 'sw')"
         >
         </div>
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler s"
             :style="{
@@ -46,7 +46,7 @@
             @mousedown.stop.prevent="startDrag(item, 's')"
         >
         </div>
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler se"
             :style="{
@@ -61,7 +61,7 @@
             @mousedown.stop.prevent="startDrag(item, 'se')"
         >
         </div>
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler e"
             :style="{
@@ -76,7 +76,7 @@
             @mousedown.stop.prevent="startDrag(item, 'e')"
         >
         </div>
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler ne"
             :style="{
@@ -91,7 +91,7 @@
             @mousedown.stop.prevent="startDrag(item, 'ne')"
         >
         </div>
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler n"
             :style="{
@@ -106,7 +106,7 @@
             @mousedown.stop.prevent="startDrag(item, 'n')"
         >
         </div>
-        <div 
+        <div
             v-if="item.resizable"
             class="select-areas-resize-handler nw"
             :style="{
@@ -127,13 +127,23 @@
 export default {
   data () {
     return {
-        pos: null
+      pos: null
     }
   },
   props: {
     item: {
       type: Object,
-      default: null
+      default: () => {
+        return {
+          id: 0,
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          z: 0,
+          resizable: false
+        }
+      }
     },
     posImg: {
       type: Object,
@@ -141,19 +151,19 @@ export default {
     }
   },
   methods: {
-    startDrag(item, type) {
-        this.pos = type
-        document.addEventListener('mousemove', this.doDrag)
-        this.$emit('startDrag')
+    startDrag (item, type) {
+      this.pos = type
+      document.addEventListener('mousemove', this.doDrag)
+      this.$emit('startDrag')
     },
-    doDrag(e) {
-        this.$emit('doDrag', this.item, this.pos, e)
+    doDrag (e) {
+      this.$emit('doDrag', this.item, this.pos, e)
     }
   },
-  updated() {
-      if (this.item.resizable == false) {
-          window.addEventListener('mouseup', document.removeEventListener('mousemove', this.doDrag))
-      }
+  updated () {
+    if (this.item.resizable === false) {
+      window.addEventListener('mouseup', document.removeEventListener('mousemove', this.doDrag))
+    }
   }
 }
 </script>

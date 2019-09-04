@@ -1,3 +1,4 @@
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/sun-asterisk-research/multi-select-areas-image/master.svg?style=flat-square)](https://codecov.io/gh/sun-asterisk-research/multi-select-areas-image/)
 [![npm download](https://img.shields.io/npm/dt/multi-select-areas-image.svg?maxAge=30)](https://www.npmjs.com/package/multi-select-areas-image)
 [![npm download per month](https://img.shields.io/npm/dm/multi-select-areas-image.svg?)](https://www.npmjs.com/package/multi-select-areas-image)
 ![GitHub open issues](https://img.shields.io/github/issues/sun-asterisk-research/multi-select-areas-image)
@@ -9,7 +10,7 @@ https://demo-multi-select-areas-image.herokuapp.com
 
 ## Installation
 
-### With npm or yarn 
+### With npm or yarn
 
 ```bash
 yarn add multi-select-areas-image

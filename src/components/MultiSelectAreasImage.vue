@@ -246,8 +246,13 @@ export default {
     mouseMove (e) {
       if (this.mousedown) {
         this.areas.filter(x => x.id === this.temp).map(item => {
-          item.width = (e.pageX - item.x - this.posImg.left) - 8
-          item.height = (e.pageY - item.y - this.posImg.top) - 8
+          if (e.pageX - item.x < 0 || e.pageY - item.y < 0) {
+            item.width = 50
+            item.height = 50
+          } else {
+            item.width = (e.pageX - item.x - this.posImg.left) - 8
+            item.height = (e.pageY - item.y - this.posImg.top) - 8
+          }
         })
       }
     },

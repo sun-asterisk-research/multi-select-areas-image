@@ -1,5 +1,5 @@
 /*!
- * multi-select-areas-image v0.1.2
+ * multi-select-areas-image v0.1.4
  * (c) quanghung97
  * Released under the MIT License.
  */
@@ -139,11 +139,21 @@ var script = {
   props: {
     item: {
       type: Object,
-      "default": null
+      default: function _default() {
+        return {
+          id: 0,
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          z: 0,
+          resizable: false
+        };
+      }
     },
     posImg: {
       type: Object,
-      "default": null
+      default: null
     }
   },
   methods: {
@@ -157,7 +167,7 @@ var script = {
     }
   },
   updated: function updated() {
-    if (this.item.resizable == false) {
+    if (this.item.resizable === false) {
       window.addEventListener('mouseup', document.removeEventListener('mousemove', this.doDrag));
     }
   }
@@ -468,8 +478,8 @@ var __vue_staticRenderFns__ = [];
 
 var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
   if (!inject) return;
-  inject("data-v-06438e33_0", {
-    source: ".select-areas-resize-handler[data-v-06438e33]{background-color:#000;border:1px #fff solid;height:8px;width:8px;overflow:hidden}",
+  inject("data-v-12429be8_0", {
+    source: ".select-areas-resize-handler[data-v-12429be8]{background-color:#000;border:1px #fff solid;height:8px;width:8px;overflow:hidden}",
     map: undefined,
     media: undefined
   });
@@ -477,7 +487,7 @@ var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
 /* scoped */
 
 
-var __vue_scope_id__ = "data-v-06438e33";
+var __vue_scope_id__ = "data-v-12429be8";
 /* module identifier */
 
 var __vue_module_identifier__ = undefined;
@@ -492,19 +502,6 @@ var Resizable = normalizeComponent_1({
 }, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, browser, undefined);
 
 //
-
-function _await(value, then, direct) {
-  if (direct) {
-    return then ? then(value) : value;
-  }
-
-  if (!value || !value.then) {
-    value = Promise.resolve(value);
-  }
-
-  return then ? value.then(then) : value;
-}
-
 var script$1 = {
   data: function data() {
     return {
@@ -546,19 +543,19 @@ var script$1 = {
   props: {
     cropUrl: {
       type: String,
-      "default": 'https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/45585072_925043081015026_6599956628924006400_o.jpg?_nc_cat=108&_nc_oc=AQlJUcFj4S_wGeX016thVhmgINU5wDV4xPBNSCIcYSti9Sm5WEPBDYO_kxK4aRP0Emo&_nc_ht=scontent.fhan2-3.fna&oh=052bb05956a1460d014205754da5a15b&oe=5DCC1053'
+      default: 'https://scontent.fhan2-3.fna.fbcdn.net/v/t1.0-9/45585072_925043081015026_6599956628924006400_o.jpg?_nc_cat=108&_nc_oc=AQlJUcFj4S_wGeX016thVhmgINU5wDV4xPBNSCIcYSti9Sm5WEPBDYO_kxK4aRP0Emo&_nc_ht=scontent.fhan2-3.fna&oh=052bb05956a1460d014205754da5a15b&oe=5DCC1053'
     },
     width: {
       type: Number,
-      "default": 1500
+      default: 1500
     },
     opacityOutline: {
       type: Number,
-      "default": 0.5
+      default: 0.5
     },
     opacityOverlay: {
       type: Number,
-      "default": 0.5
+      default: 0.5
     }
   },
   components: {
@@ -584,20 +581,13 @@ var script$1 = {
     }
   },
   methods: {
-    setSize: function setSize() {
-      try {
-        var _this5 = this;
-
-        if (!_this5.url) {
-          return;
-        }
-
-        return _await(_this5.getSize(_this5.url), function (imgSize) {
-          _this5.originImgSize = imgSize;
-        });
-      } catch (e) {
-        return Promise.reject(e);
+    setSize: async function setSize() {
+      if (!this.url) {
+        return;
       }
+
+      var imgSize = await this.getSize(this.url);
+      this.originImgSize = imgSize;
     },
     // Get the size of the src image
     getSize: function getSize(src) {
@@ -674,14 +664,19 @@ var script$1 = {
       }
     },
     mouseMove: function mouseMove(e) {
-      var _this6 = this;
+      var _this4 = this;
 
       if (this.mousedown) {
         this.areas.filter(function (x) {
-          return x.id == _this6.temp;
+          return x.id === _this4.temp;
         }).map(function (item) {
-          item.width = e.pageX - item.x - _this6.posImg.left - 8;
-          item.height = e.pageY - item.y - _this6.posImg.top - 8;
+          if (e.pageX - item.x < 0 || e.pageY - item.y < 0) {
+            item.width = 50;
+            item.height = 50;
+          } else {
+            item.width = e.pageX - item.x - _this4.posImg.left - 8;
+            item.height = e.pageY - item.y - _this4.posImg.top - 8;
+          }
         });
       }
     },
@@ -689,19 +684,19 @@ var script$1 = {
       this.mousedown = false; // delete all point width is = 0
 
       this.areas = this.areas.filter(function (item) {
-        return item.width != 0 || item.height != 0;
+        return item.width !== 0 || item.height !== 0;
       });
     },
     // after click rectangle area select active resizable and dragable
     changeResizable: function changeResizable(id) {
       this.areas.filter(function (item) {
-        return item.id == id;
+        return item.id === id;
       }).map(function (item) {
         item.resizable = true;
         item.z = 100;
       });
       this.areas.filter(function (item) {
-        return item.id != id;
+        return item.id !== id;
       }).map(function (item) {
         item.resizable = false;
         item.z = 0;
@@ -710,7 +705,7 @@ var script$1 = {
     // delete item area
     deleteSelected: function deleteSelected(id) {
       this.areas = this.areas.filter(function (item) {
-        return item.id != id;
+        return item.id !== id;
       });
     },
     // drag point around rectangle on image startDrag doDrag endDrag
@@ -1048,8 +1043,8 @@ var __vue_staticRenderFns__$1 = [];
 
 var __vue_inject_styles__$1 = function __vue_inject_styles__(inject) {
   if (!inject) return;
-  inject("data-v-25c89760_0", {
-    source: ".c-crop[data-v-25c89760]{display:inline-block}.c-crop *[data-v-25c89760]{box-sizing:border-box}.c-crop img[data-v-25c89760]{pointer-events:none}.c-crop .c-crop--hide_main[data-v-25c89760]{width:0;height:0;overflow:hidden}.original-image[data-v-25c89760]{position:absolute}.select-areas--overlay[data-v-25c89760]{background-color:#000;overflow:hidden;position:absolute}.select-areas--outline[data-v-25c89760]{background:#fff url(data:image/gif;base64,R0lGODlhCAAIAJEAAKqqqv///wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAACAAIAAACDZQFCadrzVRMB9FZ5SwAIfkECQoAAAAsAAAAAAgACAAAAg+ELqCYaudeW9ChyOyltQAAIfkECQoAAAAsAAAAAAgACAAAAg8EhGKXm+rQYtC0WGl9oAAAIfkECQoAAAAsAAAAAAgACAAAAg+EhWKQernaYmjCWLF7qAAAIfkECQoAAAAsAAAAAAgACAAAAg2EISmna81UTAfRWeUsACH5BAkKAAAALAAAAAAIAAgAAAIPFA6imGrnXlvQocjspbUAACH5BAkKAAAALAAAAAAIAAgAAAIPlIBgl5vq0GLQtFhpfaIAACH5BAUKAAAALAAAAAAIAAgAAAIPlIFgknq52mJowlixe6gAADs=);overflow:hidden}.select-areas--delete_area[data-v-25c89760]{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfjCB0SCQuXtRLQAAABRklEQVQoz4XRMUiUcQCG8V//O6MhuuEwI4VDDg9ubDCC+ILzIgcFySEnP2wOkqDRMffAa+3wpqDBSRAPp6MlC+yTFsnS0EzBursp8ECHS3AIetYXXnjfhy5B2SuJlpZPKkaEbnAJDJh33w/v7SLntpvq5uz5G69IPFWUlZGRVTQrsaK/W74o8UiftHPS+kxJVIWUkucWLHvilkO/kfdY5K2OaR+DSQfqjrWNmzFkyIxxbcdWHZpMi7xzpGNJxl29KGhY0nFk3b0gZ0cH22q2lJVtqdnGiW9ywX8Idg3qQV6sYM2aglgePQbtpDXc0avpoUhDDbFIy0vXDWuk/BH76avIpje++OW7lGs+mzBqnqAqMfWPoza9FlJOfVAy5kTTqcuuuCpnwqx9z7S7svq98MDBBVk31M3Zv7hmRMWGpqYNC0rnus8AXqJjvC9MrWIAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMDgtMjlUMTY6MDk6MTErMDI6MDDV30hTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTA4LTI5VDE2OjA5OjExKzAyOjAwpILw7wAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=);cursor:pointer;height:16px;width:16px}.delete-area[data-v-25c89760]{position:absolute;cursor:pointer;padding:5px}",
+  inject("data-v-3b5af51c_0", {
+    source: ".c-crop[data-v-3b5af51c]{display:inline-block}.c-crop *[data-v-3b5af51c]{box-sizing:border-box}.c-crop img[data-v-3b5af51c]{pointer-events:none}.c-crop .c-crop--hide_main[data-v-3b5af51c]{width:0;height:0;overflow:hidden}.original-image[data-v-3b5af51c]{position:absolute}.select-areas--overlay[data-v-3b5af51c]{background-color:#000;overflow:hidden;position:absolute}.select-areas--outline[data-v-3b5af51c]{background:#fff url(data:image/gif;base64,R0lGODlhCAAIAJEAAKqqqv///wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAACAAIAAACDZQFCadrzVRMB9FZ5SwAIfkECQoAAAAsAAAAAAgACAAAAg+ELqCYaudeW9ChyOyltQAAIfkECQoAAAAsAAAAAAgACAAAAg8EhGKXm+rQYtC0WGl9oAAAIfkECQoAAAAsAAAAAAgACAAAAg+EhWKQernaYmjCWLF7qAAAIfkECQoAAAAsAAAAAAgACAAAAg2EISmna81UTAfRWeUsACH5BAkKAAAALAAAAAAIAAgAAAIPFA6imGrnXlvQocjspbUAACH5BAkKAAAALAAAAAAIAAgAAAIPlIBgl5vq0GLQtFhpfaIAACH5BAUKAAAALAAAAAAIAAgAAAIPlIFgknq52mJowlixe6gAADs=);overflow:hidden}.select-areas--delete_area[data-v-3b5af51c]{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfjCB0SCQuXtRLQAAABRklEQVQoz4XRMUiUcQCG8V//O6MhuuEwI4VDDg9ubDCC+ILzIgcFySEnP2wOkqDRMffAa+3wpqDBSRAPp6MlC+yTFsnS0EzBursp8ECHS3AIetYXXnjfhy5B2SuJlpZPKkaEbnAJDJh33w/v7SLntpvq5uz5G69IPFWUlZGRVTQrsaK/W74o8UiftHPS+kxJVIWUkucWLHvilkO/kfdY5K2OaR+DSQfqjrWNmzFkyIxxbcdWHZpMi7xzpGNJxl29KGhY0nFk3b0gZ0cH22q2lJVtqdnGiW9ywX8Idg3qQV6sYM2aglgePQbtpDXc0avpoUhDDbFIy0vXDWuk/BH76avIpje++OW7lGs+mzBqnqAqMfWPoza9FlJOfVAy5kTTqcuuuCpnwqx9z7S7svq98MDBBVk31M3Zv7hmRMWGpqYNC0rnus8AXqJjvC9MrWIAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMDgtMjlUMTY6MDk6MTErMDI6MDDV30hTAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTA4LTI5VDE2OjA5OjExKzAyOjAwpILw7wAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=);cursor:pointer;height:16px;width:16px}.delete-area[data-v-3b5af51c]{position:absolute;cursor:pointer;padding:5px}",
     map: undefined,
     media: undefined
   });
@@ -1057,7 +1052,7 @@ var __vue_inject_styles__$1 = function __vue_inject_styles__(inject) {
 /* scoped */
 
 
-var __vue_scope_id__$1 = "data-v-25c89760";
+var __vue_scope_id__$1 = "data-v-3b5af51c";
 /* module identifier */
 
 var __vue_module_identifier__$1 = undefined;
@@ -1072,10 +1067,10 @@ var MultiSelectAreasImage = normalizeComponent_1({
 }, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, browser, undefined);
 
 var index = {
-  install: function install(Vue, options) {
+  install: function install(Vue) {
     // Let's register our component globally
     // https://vuejs.org/v2/guide/components-registration.html
-    Vue.component("multi-select-areas-image", MultiSelectAreasImage);
+    Vue.component('multi-select-areas-image', MultiSelectAreasImage);
   }
 };
 

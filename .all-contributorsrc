@@ -9,6 +9,26 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "none",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "quanghung97",
+      "name": "quanghung97",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/25919519?v=4",
+      "profile": "https://github.com/quanghung97",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "vunt-0906",
+      "name": "vunt-0906",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/52224331?v=4",
+      "profile": "https://github.com/vunt-0906",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
   "contributorsPerLine": 7
 }

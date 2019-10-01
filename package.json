@@ -16,6 +16,7 @@
   ],
   "main": "./dist/index.js",
   "dependencies": {
+    "all-contributors-cli": "^6.9.1",
     "vue": "^2.6.10"
   },
   "devDependencies": {

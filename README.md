@@ -1,4 +1,5 @@
 [![Codecov Coverage](https://img.shields.io/codecov/c/github/sun-asterisk-research/multi-select-areas-image/master.svg?style=flat-square)](https://codecov.io/gh/sun-asterisk-research/multi-select-areas-image/)
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
 [![npm download](https://img.shields.io/npm/dt/multi-select-areas-image.svg?maxAge=30)](https://www.npmjs.com/package/multi-select-areas-image)
 [![npm download per month](https://img.shields.io/npm/dm/multi-select-areas-image.svg?)](https://www.npmjs.com/package/multi-select-areas-image)
 ![GitHub open issues](https://img.shields.io/github/issues/sun-asterisk-research/multi-select-areas-image)
@@ -105,3 +106,16 @@ export default {
 #### getListAreas
 Params: `Null`<br>
 Return: `Array`
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

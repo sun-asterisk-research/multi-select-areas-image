@@ -5,6 +5,8 @@
 ![GitHub open issues](https://img.shields.io/github/issues/sun-asterisk-research/multi-select-areas-image)
 [![npm version](https://img.shields.io/npm/v/multi-select-areas-image.svg)](https://www.npmjs.com/package/multi-select-areas-image)
 
+![Logo](https://i.ibb.co/9hxcct7/Untitled-2.jpg)
+
 ## Live Demos
 
 https://demo-multi-select-areas-image.herokuapp.com

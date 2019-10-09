@@ -7,7 +7,7 @@
 
 ## Logo
 
-![Logo]('https://images.cooltext.com/5334666.png')
+![Logo](https://images.cooltext.com/5334666.png)
 
 ## Live Demos
 

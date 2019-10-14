@@ -25,10 +25,6 @@
     <a href="https://github.com/sun-asterisk-research/multi-select-areas-image/issues">
         <img alt="GitHub open issues" src="https://img.shields.io/github/issues/sun-asterisk-research/multi-select-areas-image">
     </a>
-    <!--open issues-->
-    <a href="https://github.com/sun-asterisk-research/multi-select-areas-image/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen">
-        <img alt="GitHub open issues" src="https://img.shields.io/github/issues/sun-asterisk-research/multi-select-areas-image">
-    </a>
     <!--npm version-->
     <a href="https://www.npmjs.com/package/multi-select-areas-image">
         <img alt="GitHub open issues" src="https://img.shields.io/npm/v/multi-select-areas-image.svg">

@@ -90,8 +90,8 @@
 </template>
 <script>
 import Resizable from './Resizable.vue'
-
 export default {
+  name: "MultiSelectAreasImage",
   data () {
     return {
       mousedown: false, // state mouse down event
@@ -107,17 +107,7 @@ export default {
       },
       scrollLeft: 0,
       scrollTop: 0,
-      areas: [
-        {
-          id: 1,
-          x: 100,
-          y: 200,
-          width: 200,
-          height: 100,
-          z: 0,
-          resizable: false
-        }
-      ],
+      areas: this.selectAreas,
       moveTempX: 0,
       moveTempY: 0,
       moveCurrentX: 0,
@@ -143,7 +133,11 @@ export default {
     opacityOverlay: {
       type: Number,
       default: 0.5
-    }
+    },
+    selectAreas: {
+      type: Array,
+      default: () => []
+    },
   },
   components: {
     Resizable
@@ -225,7 +219,8 @@ export default {
             width: 0,
             height: 0,
             z: 0,
-            resizable: false
+            resizable: false,
+            selected: false,
           })
           this.temp = idArea + 1
         }
@@ -237,7 +232,8 @@ export default {
           width: 0,
           height: 0,
           z: 0,
-          resizable: false
+          resizable: false,
+          selected: false,
         })
         this.temp = 1
       }
@@ -416,6 +412,10 @@ export default {
 
     // move rectangle area startMove doMove endMove
     startMove (item, e) {
+      this.areas.forEach(elem => {
+        elem.selected = false;
+      });
+      item.selected = true;
       this.move = true
       this.moveTempX = e.clientX
       this.moveTempY = e.clientY

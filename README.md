@@ -115,6 +115,14 @@ Default: `0.5`
 
 Set opacity overlay on image
 
+#### selectAreas
+
+Type: `Array`<br>
+Required: `false`<br>
+Default: `[]`
+
+Set opacity overlay on image
+
 ### \$emit
 
 ```html

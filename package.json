@@ -6,7 +6,8 @@
   "author": "quanghung97",
   "scripts": {
     "bundle": "npx bili --bundle-node-modules",
-    "dev": "vue serve src/components/MultiSelectAreasImage.vue",
+    "dev:component": "vue serve src/components/MultiSelectAreasImage.vue",
+    "dev": "vue serve src/demo.vue",
     "test:unit": "vue-cli-service test:unit",
     "lint:fix": "vue-cli-service lint",
     "lint": "eslint --ext .js,.vue src"

@@ -235,14 +235,6 @@ export default {
       let imageAreaTop = imageAreaRef.getBoundingClientRect().top
       let imageAreaLeft = imageAreaRef.getBoundingClientRect().left
 
-      // if (!this.posCorrection) {
-      //   this.scrollLeft = 0
-      //   this.scrollTop = 0
-      //
-      //   imageAreaTop = 0
-      //   imageAreaLeft = 0
-      // }
-
       this.posImg.top = imageAreaTop + this.scrollTop
 
       this.posImg.left = imageAreaLeft + this.scrollLeft

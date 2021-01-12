@@ -9,8 +9,8 @@
                 position: 'absolute',
                 cursor: 'w-resize',
                 display: 'block',
-                left: (item.x+posImg.left-6)+'px',
-                top: (item.y+posImg.top+item.height/2-4)+'px',
+                left: (displayPosX(item)-6)+'px',
+                top: (displayPosY(item)+item.height/2-4)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 'w')"
@@ -24,8 +24,8 @@
                 position: 'absolute',
                 cursor: 'sw-resize',
                 display: 'block',
-                left: (item.x+posImg.left-4)+'px',
-                top: (item.y+posImg.top+item.height-6)+'px',
+                left: (displayPosX(item)-4)+'px',
+                top: (displayPosY(item)+item.height-6)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 'sw')"
@@ -39,8 +39,8 @@
                 position: 'absolute',
                 cursor: 's-resize',
                 display: 'block',
-                left: (item.x+posImg.left+item.width/2-4)+'px',
-                top: (item.y+posImg.top+item.height-6)+'px',
+                left: (displayPosX(item)+item.width/2-4)+'px',
+                top: (displayPosY(item)+item.height-6)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 's')"
@@ -54,8 +54,8 @@
                 position: 'absolute',
                 cursor: 'se-resize',
                 display: 'block',
-                left: (item.x+posImg.left+item.width-6)+'px',
-                top: (item.y+posImg.top+item.height-6)+'px',
+                left: (displayPosX(item)+item.width-6)+'px',
+                top: (displayPosY(item)+item.height-6)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 'se')"
@@ -69,8 +69,8 @@
                 position: 'absolute',
                 cursor: 'e-resize',
                 display: 'block',
-                left: (item.x+posImg.left+item.width-6)+'px',
-                top: (item.y+posImg.top+item.height/2-6)+'px',
+                left: (displayPosX(item)+item.width-6)+'px',
+                top: (displayPosY(item)+item.height/2-6)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 'e')"
@@ -84,8 +84,8 @@
                 position: 'absolute',
                 cursor: 'ne-resize',
                 display: 'block',
-                left: (item.x+posImg.left+item.width-6)+'px',
-                top: (item.y+posImg.top-4)+'px',
+                left: (displayPosX(item)+item.width-6)+'px',
+                top: (displayPosY(item)-4)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 'ne')"
@@ -99,8 +99,8 @@
                 position: 'absolute',
                 cursor: 'n-resize',
                 display: 'block',
-                left: (item.x+posImg.left+item.width/2-4)+'px',
-                top: (item.y+posImg.top-4)+'px',
+                left: (displayPosX(item)+item.width/2-4)+'px',
+                top: (displayPosY(item)-4)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 'n')"
@@ -114,8 +114,8 @@
                 position: 'absolute',
                 cursor: 'nw-resize',
                 display: 'block',
-                left: (item.x+posImg.left-4)+'px',
-                top: (item.y+posImg.top-4)+'px',
+                left: (displayPosX(item)-4)+'px',
+                top: (displayPosY(item)-4)+'px',
                 'z-index': item.z+10
             }"
             @mousedown.stop.prevent="startDrag(item, 'nw')"
@@ -145,12 +145,22 @@ export default {
         }
       }
     },
+    posCorrection: {
+      type: Boolean,
+      default: true
+    },
     posImg: {
       type: Object,
       default: null
     }
   },
   methods: {
+    displayPosX (item) {
+      return item.x + (this.posCorrection ? this.posImg.left : 0)
+    },
+    displayPosY (item) {
+      return item.y + (this.posCorrection ? this.posImg.top : 0)
+    },
     startDrag (item, type) {
       this.pos = type
       document.addEventListener('mousemove', this.doDrag)

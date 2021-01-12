@@ -43,8 +43,8 @@
                   cursor: 'default',
                   width: item.width+4+'px',
                   height: item.height+4+'px',
-                  left: item.x+posImg.left-2+'px',
-                  top: item.y+posImg.top-2+'px',
+                  left: areaDisplayPosX(item)-2+'px',
+                  top: areaDisplayPosY(item)-2+'px',
                   'z-index': item.z
                 }"
             ></div>
@@ -56,8 +56,8 @@
                   cursor: 'move',
                   width: item.width+'px',
                   height: item.height+'px',
-                  left: item.x+posImg.left+'px',
-                  top: item.y+posImg.top+'px',
+                  left: areaDisplayPosX(item)+'px',
+                  top: areaDisplayPosY(item)+'px',
                   'z-index': item.z+2
                 }"
                 @click="changeResizable(item.id)"
@@ -68,8 +68,8 @@
                 class="delete-area"
                 :style="{
                   display: 'block',
-                  left: item.x+posImg.left+item.width+'px',
-                  top: item.y+posImg.top-25+'px',
+                  left: areaDisplayPosX(item)+item.width+'px',
+                  top: areaDisplayPosY(item)-25+'px',
                   'z-index': item.z+2
                 }"
                 @click="deleteSelected(item.id)"
@@ -77,7 +77,13 @@
               <div class="select-areas--delete_area"></div>
             </div>
             <!-- resize handler -->
-            <Resizable :item="item" :posImg="posImg" @startDrag="startDrag" @doDrag="doDrag" />
+            <Resizable
+              :item="item"
+              :posImg="posImg"
+              :pos-correction="posCorrection"
+              @startDrag="startDrag"
+              @doDrag="doDrag"
+            />
           </div>
         </div>
 
@@ -144,6 +150,10 @@ export default {
     opacityOverlay: {
       type: Number,
       default: 0.5
+    },
+    posCorrection: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
@@ -166,6 +176,18 @@ export default {
     }
   },
   methods: {
+    areaDisplayPosX (area) {
+      return area.x + (this.posCorrection ? this.posImg.left : 0)
+    },
+    areaDisplayPosY (area) {
+      return area.y + (this.posCorrection ? this.posImg.top : 0)
+    },
+    mousePosX (e) {
+      return e.pageX - this.posImg.left
+    },
+    mousePosY (e) {
+      return e.pageY - this.posImg.top
+    },
     async setSize () {
       if (!this.url) {
         return
@@ -205,42 +227,50 @@ export default {
       }
     },
     calcPosOfBox () { // set posImg static
-      let ref = this.$refs['image-area']
+      let imageAreaRef = this.$refs['image-area']
 
       this.scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
       this.scrollTop = window.pageYOffset || document.documentElement.scrollTop
-      this.posImg.top = ref.getBoundingClientRect().top + this.scrollTop
 
-      this.posImg.left = ref.getBoundingClientRect().left + this.scrollLeft
+      let imageAreaTop = imageAreaRef.getBoundingClientRect().top
+      let imageAreaLeft = imageAreaRef.getBoundingClientRect().left
+
+      // if (!this.posCorrection) {
+      //   this.scrollLeft = 0
+      //   this.scrollTop = 0
+      //
+      //   imageAreaTop = 0
+      //   imageAreaLeft = 0
+      // }
+
+      this.posImg.top = imageAreaTop + this.scrollTop
+
+      this.posImg.left = imageAreaLeft + this.scrollLeft
     },
     // draw rectangle on image mouseDown mouseMove mouseUp
     mouseDown (e) {
       this.mousedown = true
+      let newAreaId = null
+
       if (this.areas.length > 0) {
-        let idArea = this.areas.slice(-1).pop().id // get last areas
-        if (idArea) {
-          this.areas.push({
-            id: idArea + 1,
-            x: e.pageX - this.posImg.left,
-            y: e.pageY - this.posImg.top,
-            width: 0,
-            height: 0,
-            z: 0,
-            resizable: false
-          })
-          this.temp = idArea + 1
-        }
+        // last area id + 1
+        newAreaId = this.areas.slice(-1).pop().id + 1
       } else {
-        this.areas.push({
-          id: 1,
-          x: e.pageX - this.posImg.left,
-          y: e.pageY - this.posImg.top,
+        newAreaId = 1
+      }
+
+      if (newAreaId) {
+        let newArea = {
+          id: newAreaId,
+          x: this.mousePosX(e),
+          y: this.mousePosY(e),
           width: 0,
           height: 0,
           z: 0,
           resizable: false
-        })
-        this.temp = 1
+        }
+        this.areas.push(newArea)
+        this.temp = newArea.id
       }
     },
 

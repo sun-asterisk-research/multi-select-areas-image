@@ -1,6 +1,8 @@
 <template>
   <div class="demo">
-      <multi-select-areas-image />
+      <multi-select-areas-image
+        :pos-correction="false"
+      />
   </div>
 </template>
 

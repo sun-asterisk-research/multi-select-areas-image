@@ -1,12 +1,13 @@
 {
   "name": "multi-select-areas-image",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": false,
   "description": "Multiple select areas in one image to show position each this",
   "author": "quanghung97",
   "scripts": {
     "bundle": "npx bili --bundle-node-modules",
-    "dev": "vue serve src/components/MultiSelectAreasImage.vue",
+    "dev:component": "vue serve src/components/MultiSelectAreasImage.vue",
+    "dev": "vue serve src/demo.vue",
     "test:unit": "vue-cli-service test:unit",
     "lint:fix": "vue-cli-service lint",
     "lint": "eslint --ext .js,.vue src"
